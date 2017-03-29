@@ -1,0 +1,17 @@
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\bin\Debug\实时聊天.exe
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\bin\Debug\实时聊天.pdb
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.csprojResolveAssemblyReference.cache
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.Properties.Resources.resources
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.csproj.GenerateResource.Cache
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.exe
+d:\users\dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.pdb
+D:\Users\Dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.fm_client.resources
+D:\Users\Dinger\documents\visual studio 2012\Projects\实时聊天\实时聊天\obj\Debug\实时聊天.fm_server.resources
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\bin\Debug\实时聊天.exe
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\bin\Debug\实时聊天.pdb
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.csprojResolveAssemblyReference.cache
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.fm_server.resources
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.Properties.Resources.resources
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.csproj.GenerateResource.Cache
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.exe
+C:\Users\Dinger_PC\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.pdb

@@ -1,0 +1,201 @@
+﻿using NetChatLib;
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace Client
+{
+    public partial class fm_client : Form
+    {
+        #region 字段的声明
+        /// <summary>
+        /// 用于聊天的类
+        /// </summary>
+        NetChat chat = new NetChat();
+        /// <summary>
+        /// 连接到服务器用于传输文件
+        /// </summary>
+        TcpClient CLientToServerFile = null;
+        /// <summary>
+        /// 连接到远程服务器的套接字用于会话
+        /// </summary>
+        TcpClient ClientToServerChat = new TcpClient();
+        private FileHelper filehelper;
+        #endregion
+
+        #region 系统的默认的窗体初始化
+        public fm_client()
+        {
+            InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            this.Load += fm_client_Load;
+            this.btn_sendFile.Click += Btn_sendFile_Click;
+        }
+
+        public fm_client(FileHelper filehelper)
+        {
+
+            InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            this.Load += fm_client_Load;
+            this.btn_sendFile.Click += Btn_sendFile_Click;
+            this.filehelper = filehelper;
+        }
+        #endregion
+
+        #region 窗体加载事件
+        void fm_client_Load(object sender, EventArgs e)
+        {
+
+            #region 启动一个新线程 初始化TCP并连接到服务器
+            new Thread(() =>
+            {
+                try
+                {
+
+                    ClientToServerChat.Connect(IPAddress.Parse(chat.RemoteIP1), chat.Port1);
+                    ShowMsg("连接的远程终端为： " + ClientToServerChat.Client.RemoteEndPoint.ToString());
+                }
+                catch (Exception e1)
+                {
+                    Console.WriteLine("服务器连接失败！{0}", e1.Message);
+                }
+            })
+            { IsBackground = true }.Start();
+            #endregion
+
+            #region 启动一个新线程 并监听接受消息
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        string msg = chat.RecMsg(ClientToServerChat);
+                        if (msg != null)
+                            ShowMsg("收到" + ClientToServerChat.Client.RemoteEndPoint + "(服务器)的消息为： " + msg);
+
+                    }
+                    catch (Exception e2)
+                    {
+                        Console.WriteLine("出现异常{0}", e2.Message);
+                    }
+                }
+
+            })
+            { IsBackground = true }.Start();
+            #endregion
+
+
+        }
+        #endregion
+
+        #region 清空按钮点击时的事件
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            tb_send.Text = "";
+        }
+        #endregion
+
+        #region 发送消息按钮点击时处理的事件
+        private void btn_send_Click(object sender, EventArgs e)
+        {
+            new Thread(() =>
+            {
+                string msg = tb_send.Text;
+                sendMsg(ClientToServerChat, msg);
+                ShowMsg(ClientToServerChat.Client.LocalEndPoint + "(本机):" + msg);
+            }).Start();
+        }
+        #endregion
+
+        #region 发送消息
+        /// <summary>
+        /// 发送消息的事件
+        /// </summary>
+        /// <param name="client">连接到服务器的套接字</param>
+        /// <param name="msg">消息内容</param>
+        void sendMsg(TcpClient client, string msg)
+        {
+            loop1: if (!chat.SendMsg(client, msg))
+            {
+                if (MessageBox.Show("消息发送失败！是否重新发送", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.OK)
+                {
+                    goto loop1;
+                }
+            }
+
+        }
+        #endregion
+
+        #region 显示消息到文本框中
+        void ShowMsg(string text)
+        {
+            if (string.IsNullOrWhiteSpace(tb_rec.Text))
+            {
+                tb_rec.AppendText(text);
+                return;
+            }
+            tb_rec.AppendText("\r\n" + text);
+        }
+        #endregion
+
+        #region 发送文件按钮事件处理
+        private void Btn_sendFile_Click(object sender, EventArgs e)
+        {
+            CLientToServerFile = new TcpClient();
+            string fileName = GetSendFilePath();
+            ShowMsg("准备发送文件。    已通知对方接收！");
+            NoticeServer("你有一个文件需要接收！");
+            try
+            {
+                CLientToServerFile.Connect(IPAddress.Parse(chat.RemoteIP1), chat.Port_file);
+            }
+            catch
+            {
+            }
+            ThreadPool.QueueUserWorkItem(_ =>
+              {
+                  chat.sendFile(CLientToServerFile, fileName);
+              });
+
+            ShowMsg("文件发送成功！");
+        }
+        #endregion
+
+        #region 通知服务器接收文件的消息
+        /// <summary>
+        /// 通知服务器接收文件的消息
+        /// </summary>
+        /// <param name="msg">消息内容</param>
+        private void NoticeServer(string msg)
+        {
+            sendMsg(ClientToServerChat, msg);
+        }
+        #endregion
+
+        #region 获取要发送文件的路径
+        private string GetSendFilePath()
+        {
+            string fileName = null;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+
+                loop: if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = ofd.FileName;
+                }
+                if (fileName == null) goto loop;
+                filehelper.SetFileName(ofd.SafeFileName);
+            }
+            return fileName;
+        }
+        #endregion
+
+
+    }
+}

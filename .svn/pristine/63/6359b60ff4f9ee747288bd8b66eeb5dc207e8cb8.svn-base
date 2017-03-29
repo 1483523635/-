@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace Client
+{
+    public partial class fm_client : Form
+    {
+        /// <summary>
+        /// 远程的IP地址
+        /// </summary>
+        static string remoteIp = "192.168.0.127";
+        /// <summary>
+        /// 远程的端口号
+        /// </summary>
+        static int RemotePort = 12345;
+        public fm_client()
+        {
+            InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            this.Load += fm_client_Load;
+        }
+        IPAddress ip = IPAddress.Parse(remoteIp);
+        TcpClient client = new TcpClient();
+        void fm_client_Load(object sender, EventArgs e)
+        {
+            Thread t = new Thread(() =>
+            {
+
+                try
+                {
+                    client.Connect(remoteIp, RemotePort);
+                    ShowMsg("连接的远程终端为： "+client.Client.RemoteEndPoint.ToString());
+                 //   tb_rec.AppendText("\r\n" + client.Client.LocalEndPoint + ":" + client.Client.RemoteEndPoint);
+
+                }
+                catch (Exception e1)
+                {
+                    Console.WriteLine("服务器连接失败！{0}", e1);
+                }
+
+            }
+        );
+            t.IsBackground = true;
+            t.Start();
+        }
+
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            tb_send.Text = "";
+        }
+
+        private void btn_send_Click(object sender, EventArgs e)
+        {
+           new Thread(() =>
+           {
+               client.SendBufferSize = 1024*1024;
+               Byte[] buf = new byte[1024*1024];
+               string msg = tb_send.Text;
+               buf = Encoding.Unicode.GetBytes(msg);
+               NetworkStream streamtoserver = client.GetStream();
+               streamtoserver.Write(buf,0,buf.Length);
+             ShowMsg(client.Client.LocalEndPoint+"(本机):"+msg);
+           }).Start();
+        }
+
+        void ShowMsg(string text)
+        {
+            if (string.IsNullOrWhiteSpace(tb_rec.Text))
+            {
+                tb_rec.AppendText(text);
+                return;
+            }
+            tb_rec.AppendText("\r\n"+text);
+
+        }
+    }
+}

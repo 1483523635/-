@@ -1,0 +1,12 @@
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\bin\Debug\实时聊天.exe.config
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\bin\Debug\实时聊天.exe
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\bin\Debug\实时聊天.pdb
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\bin\Debug\NetChatLib.dll
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\bin\Debug\NetChatLib.pdb
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.fm_server.resources
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.Properties.Resources.resources
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\Server.csproj.GenerateResource.Cache
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.exe
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.pdb
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\Server.csprojResolveAssemblyReference.cache
+D:\Users\Dinger\Desktop\实时聊天\实时聊天\obj\Debug\实时聊天.ChooseRec.resources

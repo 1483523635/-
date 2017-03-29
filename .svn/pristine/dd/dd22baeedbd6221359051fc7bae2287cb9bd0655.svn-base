@@ -1,0 +1,61 @@
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace 实时聊天
+{
+    public partial class fm_server : Form
+    {
+        public fm_server()
+        {
+            InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
+            this.Load += fm_server_Load;
+        }
+        private static string IP_local = "192.168.0.127";
+        private static int port = 12345;
+        private int Buffsize = 1024 * 1024;
+        static  IPAddress  ip = IPAddress.Parse(IP_local);
+        TcpListener listener = new TcpListener(ip, port);
+      
+        void fm_server_Load(object sender, EventArgs e)
+        {
+            Thread t=new Thread(()=>
+            {
+              
+                while (true)
+                {
+                    listener.Start();
+                    ShowMsg("开始监听");
+                    //获取连接的远程主机的信息
+                    TcpClient remoteClient = listener.AcceptTcpClient();
+                    ShowMsg("连接的远程主机： " + remoteClient.Client.RemoteEndPoint);
+                    NetworkStream streamtoclient = remoteClient.GetStream();
+                    byte[] buffer = new byte[Buffsize];
+                    int bytesRead = streamtoclient.Read(buffer, 0, buffer.Length);
+                    string msg = Encoding.Unicode.GetString(buffer, 0, buffer.Length);
+                    ShowMsg("收到的信息为："+msg);
+                }
+            }
+        );
+            t.IsBackground = true;
+          t.Start();
+         
+        }
+
+        void ShowMsg(string text )
+        {
+            if (string.IsNullOrWhiteSpace(tb_rec.Text))
+            {
+                tb_rec.AppendText(text);
+                return;
+            }
+            tb_rec.AppendText("\r\n"+text);
+        }
+
+       
+    }
+}
